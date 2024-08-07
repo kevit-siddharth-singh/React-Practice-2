@@ -2,12 +2,45 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { appContext } from "../App";
 import QuizData from "../Data/QuizData.js";
+import { useSelector } from "react-redux";
 
 const Quiz = () => {
   const { selectedLanguage, firstName, lastName, email } =
     useContext(appContext);
   const [questionCounter, setQuestionCounter] = useState(0);
   const [currentQuestion, setCurrentQuestion] = useState(null);
+
+  // Todo: -- [Currently Working].
+  const [selectedAnswers, setSelectedAnswers] = useState([]);
+
+  // Sid: Function for handling Selected Answer
+  // !Local Selected Option State
+  const [localSelectedOption, setLocalSelectedOption] = useState("");
+  function selectAnswer(id, option, idx) {
+    setLocalSelectedOption(option);
+  }
+
+  // Registering Answer in the State
+  function RegisterAnswer() {
+    //  ! Currently Working here - I left here ....
+    setSelectedAnswers([
+      ...selectedAnswers,
+      {
+        id: questionCounter + 1,
+        answer: localSelectedOption,
+      },
+    ]);
+  }
+
+  console.log(selectedAnswers);
+  // Registering Answer in the State
+
+  // Todo: -- [Currently Working].
+
+  // Accessing Store Data from Store
+  const QuizData = useSelector((state) => state);
+
+  // Accessing Store Data from Store
 
   //Sid Timer Function Starts Here
   const timerUI = useRef(null);
@@ -40,6 +73,8 @@ const Quiz = () => {
       const current = questionCounter + 1;
       setQuestionCounter(current);
       setCurrentQuestion(QuizData[selectedLanguage][current]);
+      // Registering Answer..card
+      RegisterAnswer();
       console.log("next");
     }
   }
@@ -105,7 +140,7 @@ const Quiz = () => {
           <div className="timer-wrapper flex justify-center items-center">
             <div className="mt-3 timer w-[4.5rem] h-[4.5rem]  border-[5px]  border-red-500 rounded-full flex justify-center items-center ">
               <p
-                data-seconds="300"
+                data-seconds="30"
                 ref={timerUI}
                 className="text-[1.2rem] font-semibold "
               >
@@ -116,10 +151,13 @@ const Quiz = () => {
           <div className="option-wrapper flex w-full  justify-between flex-wrap gap-3  mt-9">
             {currentQuestion?.options?.map((option, idx) => (
               <div
+                onClick={() => {
+                  selectAnswer(currentQuestion?.id, option, idx);
+                }}
                 key={idx}
                 className="option bg-gray-600 w-[48%] p-3 rounded-md hover:bg-gray-700 ease-in-out duration-200 cursor-pointer "
               >
-                {option}
+                {option} {idx}
               </div>
             ))}
           </div>

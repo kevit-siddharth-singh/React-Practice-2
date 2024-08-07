@@ -5,7 +5,6 @@ import Test from "./Pages/Test.jsx";
 import { createContext, useEffect, useState } from "react";
 import Quiz from "./Pages/Quiz.jsx";
 
-  
 export const appContext = createContext();
 
 function App() {
