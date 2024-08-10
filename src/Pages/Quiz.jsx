@@ -5,37 +5,54 @@ import QuizData from "../Data/QuizData.js";
 import { useSelector } from "react-redux";
 
 const Quiz = () => {
-  const { selectedLanguage, firstName, lastName, email } =
-    useContext(appContext);
+  const {
+    selectedLanguage,
+    firstName,
+    lastName,
+    email,
+    isSubmitted,
+    setIsSubmitted,
+  } = useContext(appContext);
   const [questionCounter, setQuestionCounter] = useState(0);
   const [currentQuestion, setCurrentQuestion] = useState(null);
+  const [isExamEnded, setIsExamEnded] = useState(false);
 
   // Todo: -- [Currently Working].
   const [selectedAnswers, setSelectedAnswers] = useState([]);
 
   // Sid: Function for handling Selected Answer
   // !Local Selected Option State
-  const [localSelectedOption, setLocalSelectedOption] = useState("");
+  const [localSelectedOption, setLocalSelectedOption] = useState(null);
   function selectAnswer(id, option, idx) {
     setLocalSelectedOption(option);
   }
 
-  // Registering Answer in the State
+  // Extra code for registering answer
   function RegisterAnswer() {
-    //  ! Currently Working here - I left here ....
-    setSelectedAnswers([
-      ...selectedAnswers,
-      {
-        id: questionCounter + 1,
-        answer: localSelectedOption,
-      },
-    ]);
+    setSelectedAnswers((prevAnswers) => {
+      const existingAnswerIndex = prevAnswers.findIndex(
+        (answer) => answer.id === questionCounter + 1
+      );
+
+      if (existingAnswerIndex !== -1) {
+        // If the answer already exists, update it
+        const updatedAnswers = [...prevAnswers];
+        updatedAnswers[existingAnswerIndex].answer = localSelectedOption;
+        return updatedAnswers;
+      } else {
+        // If the answer does not exist, add a new entry
+        return [
+          ...prevAnswers,
+          {
+            id: questionCounter + 1,
+            answer: localSelectedOption,
+          },
+        ];
+      }
+    });
   }
 
-  console.log(selectedAnswers);
-  // Registering Answer in the State
-
-  // Todo: -- [Currently Working].
+  // Extra code for registering answer
 
   // Accessing Store Data from Store
   const QuizData = useSelector((state) => state);
@@ -70,13 +87,61 @@ const Quiz = () => {
   }
   function next() {
     if (questionCounter < 4) {
+      RegisterAnswer(); // Register the current answer before moving to the next question
       const current = questionCounter + 1;
       setQuestionCounter(current);
       setCurrentQuestion(QuizData[selectedLanguage][current]);
-      // Registering Answer..card
-      RegisterAnswer();
+      setLocalSelectedOption(null); // Clear local selection for the next question
       console.log("next");
+    } else if (questionCounter === 4) {
+      RegisterAnswer(); // Register the answer for the 5th question
+      submit(); // Automatically submit all answers when on the last question
     }
+  }
+
+  function submit() {
+    // Ensure the last selected answer is registered
+    setIsSubmitted(true);
+    RegisterAnswer();
+    setIsExamEnded(true);
+    // Fetch the correct answers based on the selected language
+    const quizQuestions = QuizData[selectedLanguage];
+    const correctAnswers = quizQuestions.map(
+      (question) => question.correct_answer
+    );
+
+    // Map user answers with their corresponding questions
+    const userAnswers = selectedAnswers.map((answer) => answer.answer);
+
+    // Initialize score and incorrectAnswers array
+    let score = 0;
+    const incorrectAnswers = [];
+
+    // Compare user's answers with the correct ones
+    for (let i = 0; i < quizQuestions.length; i++) {
+      if (correctAnswers[i] === userAnswers[i]) {
+        score++;
+      } else {
+        incorrectAnswers.push({
+          questionId: quizQuestions[i].id,
+          question: quizQuestions[i].question,
+          correctAnswer: correctAnswers[i],
+          userAnswer: userAnswers[i],
+        });
+      }
+    }
+
+    console.log(score);
+
+    // Navigate to the result page with the score, total questions, and incorrect answers
+    navigate("/result", {
+      replace: true,
+      state: {
+        score,
+        totalQuestions: quizQuestions.length,
+        incorrectAnswers,
+      },
+    });
   }
 
   // Sid: Next Question Logic-Btn Ends Here
@@ -95,6 +160,7 @@ const Quiz = () => {
       if (Number(timerUI.current.dataset.seconds) == 0) {
         clearInterval(timerId);
         window.alert("Exams over");
+        submit();
       }
     }, 1000);
 
@@ -106,8 +172,11 @@ const Quiz = () => {
 
   const navigate = useNavigate();
   function handleBlur() {
-    // window.alert("U have switched tab not allowed");
-    // document.title = "Failed";
+    if (!isExamEnded) {
+      window.alert("U have switched tab not allowed");
+      document.title = "Failed";
+      navigate("/result");
+    }
   }
   useEffect(() => {
     window.addEventListener("blur", handleBlur);
@@ -140,7 +209,7 @@ const Quiz = () => {
           <div className="timer-wrapper flex justify-center items-center">
             <div className="mt-3 timer w-[4.5rem] h-[4.5rem]  border-[5px]  border-red-500 rounded-full flex justify-center items-center ">
               <p
-                data-seconds="30"
+                data-seconds="300"
                 ref={timerUI}
                 className="text-[1.2rem] font-semibold "
               >
@@ -157,7 +226,7 @@ const Quiz = () => {
                 key={idx}
                 className="option bg-gray-600 w-[48%] p-3 rounded-md hover:bg-gray-700 ease-in-out duration-200 cursor-pointer "
               >
-                {option} {idx}
+                {option}
               </div>
             ))}
           </div>
@@ -170,7 +239,7 @@ const Quiz = () => {
             Prev
           </button>
           <button
-            onClick={next}
+            onClick={questionCounter == 5 ? submit : next}
             className="bg-green-500 px-6 py-2 rounded-md text-white font-semibold tracking-wider text-[1.3rem] cursor-pointer hover:bg-green-600"
           >
             {questionCounter == 4 ? "Submit" : "Next"}

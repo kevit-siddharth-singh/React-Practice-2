@@ -4,6 +4,7 @@ import { Routes, Route } from "react-router-dom";
 import Test from "./Pages/Test.jsx";
 import { createContext, useEffect, useState } from "react";
 import Quiz from "./Pages/Quiz.jsx";
+import ResultCard from "./Pages/ResultCard.jsx";
 
 export const appContext = createContext();
 
@@ -12,6 +13,7 @@ function App() {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
+  const [isSubmitted, setIsSubmitted] = useState(false);
 
   // useEffect(() => {
   //   console.log(
@@ -34,11 +36,14 @@ function App() {
           setLastName,
           email,
           setEmail,
+          isSubmitted,
+          setIsSubmitted,
         }}
       >
         <Routes>
           <Route exact path={"/"} element={<Home />} />
           <Route exact path={"/quiz"} element={<Quiz />} />
+          <Route exact path={"/result"} element={<ResultCard />} />
           <Route exact path={"/test"} element={<Test />} />
           <Route exact path={"*"} element={<PageNotFound />} />
         </Routes>
