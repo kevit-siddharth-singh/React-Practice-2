@@ -187,12 +187,11 @@ function Forms() {
                 </a>
 
                 <h1 className="mt-2 text-2xl font-bold text-gray-900 sm:text-3xl md:text-4xl dark:text-white">
-                  Welcome to Squid 🦑
+                  Welcome to Sky Test 🦑
                 </h1>
 
                 <p className="mt-4 leading-relaxed text-gray-500 dark:text-gray-400">
-                  Lorem, ipsum dolor sit amet consectetur adipisicing elit.
-                  Eligendi nam dolorum aliquam, quibusdam aperiam voluptatum.
+                  Take this ultimate test , to test your understanding
                 </p>
               </div>
 

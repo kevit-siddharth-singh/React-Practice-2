@@ -19,7 +19,7 @@ const ResultCard = () => {
   useEffect(() => {
     if (!isSubmitted) {
       // Redirect to home if quiz is not submitted
-      navigate("/", { replace: true });
+      // navigate("/", { replace: true });
     }
     if (
       selectedLanguage.trim() === "" ||
@@ -42,7 +42,7 @@ const ResultCard = () => {
             <span className="text-yellow-400">
               {firstName} {lastName}
             </span>{" "}
-            completed the quiz
+            {document.title === "Failed" ? <span className="text-red-400">Failed</span> : <span className="text-green-400">Completed</span>} the quiz
           </p>
           <p className="text-lg font-medium">
             Language:{" "}
@@ -56,7 +56,11 @@ const ResultCard = () => {
           </p>
         </div>
         <div className="mb-6">
-          {incorrectAnswers.length === 0 ? (
+          {document.title === "Failed" ? (
+            <p className="text-xl text-red-400 font-semibold text-center">
+              You Failed !
+            </p>
+          ) : incorrectAnswers.length === 0 ? (
             <p className="text-xl text-green-400 font-semibold text-center">
               Perfect! All your answers are correct!
             </p>
@@ -78,7 +82,11 @@ const ResultCard = () => {
                   </p>
                   <p className="text-md mt-2">
                     <span className="font-bold">Your Answer:</span>{" "}
-                    <span className="text-red-400">{answer.userAnswer}</span>
+                    <span className="text-red-400">
+                      {answer.userAnswer === undefined
+                        ? "not answered"
+                        : answer.userAnswer}
+                    </span>
                   </p>
                   <p className="text-md">
                     <span className="font-bold">Correct Answer:</span>{" "}
