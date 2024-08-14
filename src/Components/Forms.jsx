@@ -5,19 +5,25 @@ import QUIZCOVER from "../assets/Quizcover.webp";
 import { appContext } from "./../App";
 import Dropdown from "./Dropdown";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+
+import {
+  setSelectedLanguage,
+  setFirstName,
+  setLastName,
+  setEmail,
+  setIsSubmitted,
+  setQuestions,
+} from "../Redux/Actions";
 
 function Forms() {
   const navigate = useNavigate();
-  const {
-    selectedLanguage,
-    setSelectedLanguage,
-    firstName,
-    setFirstName,
-    lastName,
-    setLastName,
-    email,
-    setEmail,
-  } = useContext(appContext);
+
+  const dispatch = useDispatch();
+
+  const { form, language } = useSelector((state) => state);
+  // console.log({ form, language });
+
   const [firstNameLocal, setFirstNameLocal] = useState("");
   const [lastNameLocal, setLastNameLocal] = useState("");
   const [emailLocal, setEmailLocal] = useState("");
@@ -30,13 +36,6 @@ function Forms() {
   const [languageError, setLanguageError] = useState(null);
 
   const validateLocalStates = () => {
-    // console.log(
-    //   firstNameError,
-    //   lastNameError,
-    //   emailError,
-    //   languageError
-    // );
-
     // Sid: For Empty Validation starts here
     if (firstNameLocal.trim() === "") {
       setfirstNameError("Enter first name ");
@@ -53,12 +52,6 @@ function Forms() {
     if (selectedDropdownLocal.trim() === "") {
       setLanguageError("Choose a language ");
     }
-    // console.log(
-    //   languageError.trim(),
-    //   emailError.trim(),
-    //   firstNameError.trim(),
-    //   lastNameError.trim()
-    // );
 
     if (validated) {
       // console.log("VALIDATED");
@@ -67,18 +60,21 @@ function Forms() {
   };
 
   function setGlobal() {
-    setFirstName(firstNameLocal.trim());
-    setLastName(lastNameLocal.trim());
-    setEmail(emailLocal.trim());
-    setSelectedLanguage(selectedDropdownLocal.trim());
+    dispatch(setFirstName("test"));
+    dispatch(setLastName(lastNameLocal.trim()));
+    dispatch(setEmail(emailLocal.trim()));
+    dispatch(setSelectedLanguage(selectedDropdownLocal.trim()));
+    dispatch(setQuestions(selectedDropdownLocal.trim()));
   }
-
   function emailValidate(email) {
     const emailRegex = /\S+@\S+\.\S+/;
     return emailRegex.test(email.trim().toLowerCase());
   }
 
   //! UseEffect for Local form states  error check
+  // useEffect(() => {
+  //   dispatch(setSelectedLanguage("test"));
+  // }, []);
 
   useEffect(() => {
     if (selectedDropdownLocal !== "") {
@@ -115,6 +111,7 @@ function Forms() {
   }, [lastNameLocal]);
 
   // sid: Total error check
+
   useEffect(() => {
     if (
       languageError?.trim() == "" &&

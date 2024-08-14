@@ -1,0 +1,6 @@
+export const SET_SELECTED_LANGUAGE = "SET_SELECTED_LANGUAGE";
+export const SET_FIRST_NAME = "SET_FIRST_NAME";
+export const SET_LAST_NAME = "SET_LAST_NAME";
+export const SET_EMAIL = "SET_EMAIL";
+export const SET_IS_SUBMITTED = "SET_IS_SUBMITTED";
+export const SET_QUESTIONS = "SET_QUESTIONS";

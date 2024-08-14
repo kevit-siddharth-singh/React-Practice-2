@@ -1,18 +1,17 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { appContext } from "../App";
-import QuizData from "../Data/QuizData.js";
+
 import { useSelector } from "react-redux";
 
 const Quiz = () => {
-  const {
-    selectedLanguage,
-    firstName,
-    lastName,
-    email,
-    isSubmitted,
-    setIsSubmitted,
-  } = useContext(appContext);
+  // Accessing Store Form Data from Store
+  const { selectedLanguage, firstName, lastName, email } = useSelector(
+    (state) => state.form
+  );
+
+  // Accessing Store Language Data from Store
+  const { questions } = useSelector((state) => state.language ?? []);
+
   const [questionCounter, setQuestionCounter] = useState(0);
   const [currentQuestion, setCurrentQuestion] = useState(null);
   const [isExamEnded, setIsExamEnded] = useState(false);
@@ -91,8 +90,7 @@ const Quiz = () => {
     // Use a callback in `setSelectedAnswers` to ensure the state is fully updated before proceeding
     setSelectedAnswers((prevAnswers) => {
       // Fetch the correct answers based on the selected language
-      const quizQuestions = QuizData[selectedLanguage];
-      const correctAnswers = quizQuestions.map(
+      const correctAnswers = questions.map(
         (question) => question.correct_answer
       );
 
@@ -104,13 +102,13 @@ const Quiz = () => {
       const incorrectAnswers = [];
 
       // Compare user's answers with the correct ones
-      for (let i = 0; i < quizQuestions.length; i++) {
+      for (let i = 0; i < questions.length; i++) {
         if (correctAnswers[i] === userAnswers[i]) {
           score++;
         } else {
           incorrectAnswers.push({
-            questionId: quizQuestions[i].id,
-            question: quizQuestions[i].question,
+            questionId: questions[i].id,
+            question: questions[i].question,
             correctAnswer: correctAnswers[i],
             userAnswer: userAnswers[i],
           });
@@ -124,7 +122,7 @@ const Quiz = () => {
         replace: true,
         state: {
           score,
-          totalQuestions: quizQuestions.length,
+          totalQuestions: questions.length,
           incorrectAnswers,
         },
       });
@@ -132,9 +130,6 @@ const Quiz = () => {
       return prevAnswers; // Return the unchanged `prevAnswers` since we are just accessing it
     });
   }
-
-  // Accessing Store Data from Store
-  const QuizData = useSelector((state) => state);
 
   // Accessing Store Data from Store
 
@@ -161,7 +156,7 @@ const Quiz = () => {
     if (questionCounter > 0) {
       const current = questionCounter - 1;
       setQuestionCounter(current);
-      setCurrentQuestion(QuizData[selectedLanguage][current]);
+      setCurrentQuestion(questions[current]);
 
       // Restore the selected option index for the previous question
       const previousAnswer = selectedAnswers.find(
@@ -186,7 +181,7 @@ const Quiz = () => {
       RegisterAnswer(); // Register the current answer before moving to the next question
       const current = questionCounter + 1;
       setQuestionCounter(current);
-      setCurrentQuestion(QuizData[selectedLanguage][current]);
+      setCurrentQuestion(questions[current]);
 
       // Restore the selected option index for the next question
       const nextAnswer = selectedAnswers.find(
@@ -200,7 +195,7 @@ const Quiz = () => {
         setSelectedOptionIndex(null);
       }
 
-      console.log("next");
+      // console.log("next");
     } else if (questionCounter === 4) {
       RegisterAnswer(); // Register the answer for the 5th question
       submit(); // Automatically submit all answers when on the last question
@@ -227,7 +222,7 @@ const Quiz = () => {
   //   component mount phase to set the first question
   useEffect(() => {
     if (selectedLanguage) {
-      setCurrentQuestion(QuizData[selectedLanguage][questionCounter]);
+      setCurrentQuestion(questions[questionCounter]);
       //   console.log(QuizData[selectedLanguage][0]);
     }
 
@@ -238,6 +233,8 @@ const Quiz = () => {
       if (Number(timerUI.current.dataset.seconds) == 0) {
         clearInterval(timerId);
         window.alert("Exams over");
+
+        console.log(isExamEnded);
         submit();
       }
     }, 1000);
@@ -250,10 +247,15 @@ const Quiz = () => {
 
   const navigate = useNavigate();
   function handleBlur() {
+    // if (timerId == 0) {
+    //   setIsExamEnded(true);
+    // }
     if (!isExamEnded) {
+      console.log(isExamEnded);
       window.alert("You have switched tab not allowed!");
       document.title = "Failed";
       navigate("/result");
+      setIsExamEnded(false);
     }
   }
   useEffect(() => {

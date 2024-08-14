@@ -3,8 +3,13 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { appContext } from "../App";
 
 const ResultCard = () => {
-  const { selectedLanguage, firstName, lastName, email, isSubmitted } =
-    useContext(appContext);
+  const { selectedLanguage, firstName, lastName, email, isSubmitted } = {
+    selectedLanguage: "",
+    firstName: "",
+    lastName: "",
+    email: "",
+    isSubmitted: "",
+  };
 
   const navigate = useNavigate();
 
@@ -27,7 +32,7 @@ const ResultCard = () => {
       lastName.trim() === "" ||
       email.trim() === ""
     ) {
-      navigate("/", { replace: true });
+      // navigate("/", { replace: true });
     }
   }, [isSubmitted, navigate]);
 
@@ -42,7 +47,12 @@ const ResultCard = () => {
             <span className="text-yellow-400">
               {firstName} {lastName}
             </span>{" "}
-            {document.title === "Failed" ? <span className="text-red-400">Failed</span> : <span className="text-green-400">Completed</span>} the quiz
+            {document.title === "Failed" ? (
+              <span className="text-red-400">Failed</span>
+            ) : (
+              <span className="text-green-400">Completed</span>
+            )}{" "}
+            the quiz
           </p>
           <p className="text-lg font-medium">
             Language:{" "}
