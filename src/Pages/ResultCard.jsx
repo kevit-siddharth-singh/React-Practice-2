@@ -1,30 +1,36 @@
 import React, { useContext, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { appContext } from "../App";
+import { useDispatch, useSelector } from "react-redux";
+import { clearSelectedAnswers } from "../Redux/Actions";
+import { CLEAR_SELECTED_ANSWERS } from "../Redux/Action_Types";
 
 const ResultCard = () => {
-  const { selectedLanguage, firstName, lastName, email, isSubmitted } = {
-    selectedLanguage: "",
-    firstName: "",
-    lastName: "",
-    email: "",
-    isSubmitted: "",
-  };
+  const { selectedLanguage, firstName, lastName, email } = useSelector(
+    (state) => state.form
+  );
+  const dispatch = useDispatch();
+
+  function handleRetakeQuiz() {
+    dispatch(clearSelectedAnswers());
+    navigate("/");
+  }
 
   const navigate = useNavigate();
 
   const location = useLocation();
-  const { score, totalQuestions, incorrectAnswers } = location.state || {
-    score: 0,
-    totalQuestions: 0,
-    incorrectAnswers: [],
-  };
+  const { score, totalQuestions, incorrectAnswers, isSubmitted } =
+    location.state || {
+      score: 0,
+      totalQuestions: 0,
+      incorrectAnswers: [],
+      isSubmitted: false,
+    };
 
   // console.log(location.state);
   useEffect(() => {
     if (!isSubmitted) {
       // Redirect to home if quiz is not submitted
-      // navigate("/", { replace: true });
+      navigate("/", { replace: true });
     }
     if (
       selectedLanguage.trim() === "" ||
@@ -32,7 +38,7 @@ const ResultCard = () => {
       lastName.trim() === "" ||
       email.trim() === ""
     ) {
-      // navigate("/", { replace: true });
+      navigate("/", { replace: true });
     }
   }, [isSubmitted, navigate]);
 
@@ -111,7 +117,7 @@ const ResultCard = () => {
         </div>
         <div className="text-center">
           <button
-            onClick={() => navigate("/")}
+            onClick={handleRetakeQuiz}
             className="px-6 py-2 bg-green-500 hover:bg-green-600 rounded-full text-white font-semibold text-lg transition duration-300 ease-in-out"
           >
             Retake Quiz

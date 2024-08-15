@@ -4,3 +4,10 @@ export const SET_LAST_NAME = "SET_LAST_NAME";
 export const SET_EMAIL = "SET_EMAIL";
 export const SET_IS_SUBMITTED = "SET_IS_SUBMITTED";
 export const SET_QUESTIONS = "SET_QUESTIONS";
+
+// Quiz
+export const SET_ANSWER = "SET_ANSWER";
+export const NEXT_QUESTION = "NEXT_QUESTION";
+export const PREV_QUESTION = "PREV_QUESTION";
+export const CLEAR_ANSWERS = "CLEAR_ANSWERS";
+export const CLEAR_SELECTED_ANSWERS = "CLEAR_SELECTED_ANSWERS";

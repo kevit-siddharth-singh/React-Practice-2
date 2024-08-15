@@ -5,6 +5,8 @@ import {
   SET_EMAIL,
   SET_IS_SUBMITTED,
   SET_QUESTIONS,
+  SET_ANSWER,
+  CLEAR_SELECTED_ANSWERS
 } from "./Action_Types";
 
 export const setSelectedLanguage = (language) => ({
@@ -35,4 +37,14 @@ export const setIsSubmitted = (isSubmitted) => ({
 export const setQuestions = (language) => ({
   type: SET_QUESTIONS,
   payload: language,
+});
+
+// Quiz
+export const setSelectedAnswer = (data) => ({
+  type: SET_ANSWER,
+  payload: data,
+});
+
+export const clearSelectedAnswers = () => ({
+  type: CLEAR_SELECTED_ANSWERS,
 });
