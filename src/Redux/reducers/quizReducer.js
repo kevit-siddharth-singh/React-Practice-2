@@ -19,17 +19,18 @@ const quizReducer = (state = initialState, action) => {
         (answer) => answer.questionId === questionId
       );
 
-      // Update state with new answers
+      const newSelectedAnswers = [...state.selectedAnswers];
+      if (existingAnswerIndex >= 0) {
+        // Update existing answer
+        newSelectedAnswers.splice(existingAnswerIndex, 1, { questionId, useranswer, buttonId });
+      } else {
+        // Add new answer
+        newSelectedAnswers.push({ questionId, useranswer, buttonId });
+      }
+
       return {
         ...state,
-        selectedAnswers:
-          existingAnswerIndex >= 0
-            ? state.selectedAnswers.map((answer, index) =>
-                index === existingAnswerIndex
-                  ? { ...answer, useranswer, questionId, buttonId } // Update existing answer
-                  : answer
-              )
-            : [...state.selectedAnswers, { questionId, useranswer, buttonId }], // Add new answer
+        selectedAnswers: newSelectedAnswers,
       };
     }
 
