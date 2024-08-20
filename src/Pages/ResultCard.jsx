@@ -1,8 +1,8 @@
-import React, { useContext, useEffect } from "react";
+import  { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { clearSelectedAnswers } from "../Redux/Actions";
-import { CLEAR_SELECTED_ANSWERS } from "../Redux/Action_Types";
+
 
 const ResultCard = () => {
   const { selectedLanguage, firstName, lastName, email } = useSelector(
@@ -80,6 +80,7 @@ const ResultCard = () => {
             <p className="text-xl text-green-400 font-semibold text-center">
               Perfect! All your answers are correct!
             </p>
+            
           ) : (
             <div>
               <h2 className="text-xl font-semibold mb-4 text-center">

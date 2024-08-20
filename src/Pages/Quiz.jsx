@@ -7,6 +7,10 @@ import {
   PREV_QUESTION,
   CLEAR_ANSWERS,
 } from "../Redux/Action_Types";
+import PrevBtn from "../Components/PrevBtn";
+import ClearSelectionBtn from "../Components/ClearSelectionBtn";
+import NextBtn from "../Components/NextBtn";
+import QuestionCounter from "../Components/QuestionCounter";
 
 const Quiz = () => {
   // Accessing Store Form Data from Store
@@ -24,7 +28,7 @@ const Quiz = () => {
     (state) => state.quiz.currentQuestionId
   );
 
-  const test = useSelector((state) => state.quiz);
+  
 
   // Dispatcher
   const dispatch = useDispatch();
@@ -33,7 +37,7 @@ const Quiz = () => {
   const [questionCounter, setQuestionCounter] = useState(0);
   const [currentQuestion, setCurrentQuestion] = useState(null);
 
-  // Sid Timer Function Starts Here
+  
   const timerUI = useRef(null);
 
   function updateTimer() {
@@ -48,7 +52,7 @@ const Quiz = () => {
     }
   }
 
-  // Sid Timer Function Ends Here
+  
 
   // Note: Prev Btn Functionality
   function prev() {
@@ -118,6 +122,7 @@ const Quiz = () => {
     return () => {
       clearInterval(timerId);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [questionCounter, selectedLanguage, questions, dispatch]);
 
   const navigate = useNavigate();
@@ -147,7 +152,7 @@ const Quiz = () => {
   }, [selectedLanguage, firstName, lastName, email, navigate]);
 
   // Submit function (assuming it exists)
-  console.log(test);
+  
   function submit() {
     // Calculate the score
     const correctAnswers = questions.reduce((acc, question) => {
@@ -204,12 +209,9 @@ const Quiz = () => {
     <>
       <div className="quiz-wrapper bg-[#171B2C] w-full h-full flex justify-center items-center flex-col gap-16 select-none">
         <div className="question-content w-[75%] h-[60%] bg-gray-900 text-white p-10 rounded-xl">
-          <div className="question-number">
-            <h1 className="text-[2rem] font-semibold">
-              Question : {questionCounter + 1}
-            </h1>
-          </div>
-          <hr />
+
+          <QuestionCounter questionCounter={questionCounter} />
+          
           <div className="question">
             <p className="text-[2.5rem] ">{currentQuestion?.question}</p>
           </div>
@@ -244,26 +246,11 @@ const Quiz = () => {
           </div>
         </div>
         <div className="button-wrapper w-[75%] flex justify-between items-center ">
-          <button
-            onClick={prev}
-            className="bg-red-500 px-6 py-2 rounded-md text-white font-semibold tracking-wider text-[1.3rem] cursor-pointer hover:bg-red-600"
-          >
-            Prev
-          </button>
+          <PrevBtn prev={prev} />
 
-          <button
-            onClick={clearSelection}
-            className="bg-yellow-500 px-4 py-2 rounded-md text-white font-semibold cursor-pointer hover:bg-yellow-600"
-          >
-            Clear Selection
-          </button>
+          <ClearSelectionBtn clearSelection={clearSelection} />
 
-          <button
-            onClick={next}
-            className="bg-green-500 px-6 py-2 rounded-md text-white font-semibold tracking-wider text-[1.3rem] cursor-pointer hover:bg-green-600"
-          >
-            {questionCounter === 4 ? "Submit" : "Next"}
-          </button>
+          <NextBtn next={next} questionCounter={questionCounter} />
         </div>
       </div>
     </>
