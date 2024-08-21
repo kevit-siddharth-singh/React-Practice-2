@@ -54,6 +54,8 @@ const Quiz = () => {
 
   
 
+
+
   // Note: Prev Btn Functionality
   function prev() {
     if (questionCounter > 0) {
@@ -64,6 +66,9 @@ const Quiz = () => {
       });
     }
   }
+
+  
+
 
   // Sid: Next Question Logic-Btn Starts Here
   function next() {

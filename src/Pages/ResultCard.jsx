@@ -27,7 +27,7 @@ const ResultCard = () => {
       isSubmitted: false,
     };
 
-  // console.log(location.state);
+  
   useEffect(() => {
     if (!isSubmitted) {
       // Redirect to home if quiz is not submitted
