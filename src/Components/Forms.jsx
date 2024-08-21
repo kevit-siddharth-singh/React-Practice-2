@@ -1,8 +1,8 @@
 /* eslint-disable no-unused-vars */
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./Forms.css";
 import QUIZCOVER from "../assets/Quizcover.webp";
-import { appContext } from "./../App";
+
 import Dropdown from "./Dropdown";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -12,7 +12,6 @@ import {
   setFirstName,
   setLastName,
   setEmail,
-  setIsSubmitted,
   setQuestions,
 } from "../Redux/Actions";
 
